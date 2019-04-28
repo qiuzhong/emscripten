@@ -11,7 +11,7 @@ i8x16 TESTFN i8x16_load(i8x16 *ptr) {
 //  return *ptr;
 }
 void TESTFN i8x16_store(i8x16 *ptr, i8x16 vec) {
-  i8x16_store(ptr, vec);
+  wasm_v128_store(ptr, vec);
 //  *ptr = vec;
 }
 i32x4 TESTFN i32x4_const(void) {
@@ -190,7 +190,8 @@ i8x16 TESTFN i8x16_gt_s(i8x16 x, i8x16 y) {
   return wasm_i8x16_gt(x, y);
 //  return x > y;
 }
-i8x16 TESTFN u8x16_gt_u(i8x16 x, i8x16 y) {
+
+i8x16 TESTFN i8x16_gt_u(i8x16 x, i8x16 y) {
   return wasm_u8x16_gt(x,y);
 //  return (u8x16)x > (u8x16)y;
 }
@@ -198,7 +199,8 @@ i8x16 TESTFN i8x16_le_s(i8x16 x, i8x16 y) {
   return wasm_i8x16_le(x,y);
 //  return x <= y;
 }
-i8x16 TESTFN u8x16_le_u(u8x16 x, u8x16 y) {
+
+i8x16 TESTFN i8x16_le_u(u8x16 x, u8x16 y) {
    return wasm_u8x16_le(x, y);
 //  return (u8x16)x <= (u8x16)y;
 }
@@ -564,7 +566,7 @@ f32x4 TESTFN f32x4_div(f32x4 x, f32x4 y) {
 //  return x / y;
 }
 f32x4 TESTFN f32x4_min(f32x4 x, f32x4 y) {
-  return wasm_f32x4_min(f32x4)
+  return wasm_f32x4_min(x, y);
 //  return __builtin_wasm_min_f32x4(x, y);
 }
 f32x4 TESTFN f32x4_max(f32x4 x, f32x4 y) {
@@ -573,73 +575,93 @@ f32x4 TESTFN f32x4_max(f32x4 x, f32x4 y) {
 }
 #ifdef __wasm_unimplemented_simd128__
 f64x2 TESTFN f64x2_abs(f64x2 vec) {
-  return __builtin_wasm_abs_f64x2(vec);
+  return wasm_f64x2_abs(vec);
+  // return __builtin_wasm_abs_f64x2(vec);
 }
 #endif // __wasm_unimplemented_simd128__
 f64x2 TESTFN f64x2_neg(f64x2 vec) {
-  return -vec;
+  return wasm_f64x2_neg(vec);
+  // return -vec;
 }
 #ifdef __wasm_unimplemented_simd128__
 f64x2 TESTFN f64x2_sqrt(f64x2 vec) {
-  return __builtin_wasm_sqrt_f64x2(vec);
+  return wasm_f64x2_sqrt(vec);
+  // return __builtin_wasm_sqrt_f64x2(vec);
 }
 #endif // __wasm_unimplemented_simd128__
 f64x2 TESTFN f64x2_add(f64x2 x, f64x2 y) {
-  return x + y;
+  return wasm_f64x2_add(x,y);
+  // return x + y;
 }
 f64x2 TESTFN f64x2_sub(f64x2 x, f64x2 y) {
-  return x - y;
+  return wasm_f64x2_sub(x, y);
+  // return x - y;
 }
 f64x2 TESTFN f64x2_mul(f64x2 x, f64x2 y) {
-  return x * y;
+  return wasm_f64x2_mul(x, y);
+  // return x * y;
 }
+
 f64x2 TESTFN f64x2_div(f64x2 x, f64x2 y) {
-  return x / y;
+  return wasm_f64x2_div(x, y);
+  // return x / y;
 }
 #ifdef __wasm_unimplemented_simd128__
 f64x2 TESTFN f64x2_min(f64x2 x, f64x2 y) {
-  return __builtin_wasm_min_f64x2(x, y);
+  return wasm_f64x2_min(x, y);
+  // return __builtin_wasm_min_f64x2(x, y);
 }
 f64x2 TESTFN f64x2_max(f64x2 x, f64x2 y) {
-  return __builtin_wasm_max_f64x2(x, y);
+  return wasm_f64x2_max(x, y);
+  // return __builtin_wasm_max_f64x2(x, y);
 }
 #endif // __wasm_unimplemented_simd128__
 i32x4 TESTFN i32x4_trunc_s_f32x4_sat(f32x4 vec) {
-  return __builtin_wasm_trunc_saturate_s_i32x4_f32x4(vec);
+  return wasm_i32x4_trunc_s_f32x4_sat(vec);
+  // return __builtin_wasm_trunc_saturate_s_i32x4_f32x4(vec);
 }
 i32x4 TESTFN i32x4_trunc_u_f32x4_sat(f32x4 vec) {
-  return __builtin_wasm_trunc_saturate_u_i32x4_f32x4(vec);
+  return wasm_i32x4_trunc_u_f32x4_sat(vec);
+  // return __builtin_wasm_trunc_saturate_u_i32x4_f32x4(vec);
 }
 #ifdef __wasm_unimplemented_simd128__
 i64x2 TESTFN i64x2_trunc_s_f64x2_sat(f64x2 vec) {
-  return __builtin_wasm_trunc_saturate_s_i64x2_f64x2(vec);
+  return wasm_i64x2_trunc_s_f64x2_sat(vec);
 }
 i64x2 TESTFN i64x2_trunc_u_f64x2_sat(f64x2 vec) {
-  return __builtin_wasm_trunc_saturate_u_i64x2_f64x2(vec);
+  return wasm_i64x2_trunc_u_f64x2_sat(vec);
+  // return __builtin_wasm_trunc_saturate_u_i64x2_f64x2(vec);
 }
 #endif // __wasm_unimplemented_simd128__
 f32x4 TESTFN f32x4_convert_s_i32x4(i32x4 vec) {
-  return __builtin_convertvector(vec, f32x4);
+  return wasm_f32x4_convert_s_i32x4(vec);
+  // return __builtin_convertvector(vec, f32x4);
 }
 f32x4 TESTFN f32x4_convert_u_i32x4(i32x4 vec) {
-  return __builtin_convertvector((u32x4)vec, f32x4);
+  return wasm_f32x4_convert_u_i32x4(vec);
+  // return __builtin_convertvector((u32x4)vec, f32x4);
 }
 f64x2 TESTFN f64x2_convert_s_i64x2(i64x2 vec) {
-  return __builtin_convertvector(vec, f64x2);
+  return wasm_f64x2_convert_s_i64x2(vec);
+  // return __builtin_convertvector(vec, f64x2);
 }
 f64x2 TESTFN f64x2_convert_u_i64x2(i64x2 vec) {
-  return __builtin_convertvector((u64x2)vec, f64x2);
+  return wasm_f64x2_convert_u_i64x2(vec);
+  // return __builtin_convertvector((u64x2)vec, f64x2);
 }
 
 static int failures = 0;
 
 #define formatter(x) _Generic((x),                      \
-                              char: "%d",               \
-                              unsigned char: "%d",      \
-                              short: "%d",              \
-                              int64_t: "%ld",           \
+                              bool: "%d",             \
+                              int8_t: "%d",             \
+                              uint8_t: "%d",            \
+                              int16_t: "%d",            \
+                              uint16_t: "%d",           \
                               int32_t: "%d",            \
                               uint32_t: "%d",           \
+                              int64_t: "%lld",           \
+                              uint64_t: "%lld",          \
                               float: "%f",              \
                               double: "%f"              \
   )
@@ -674,13 +696,17 @@ static int failures = 0;
       __typeof__(_a) a = (_a), b = (_b);                        \
       bool err = false;                                         \
       size_t lanes = _Generic((a),                              \
-                              u8x16: 16,                        \
                               i8x16: 16,                        \
+                              u8x16: 16,                        \
                               i16x8: 8,                         \
+                              u16x8: 8,                         \
                               i32x4: 4,                         \
+                              u32x4: 4,                         \
                               i64x2: 2,                         \
+                              u64x2: 2,                         \
                               f32x4: 4,                         \
-                              f64x2: 2);                        \
+                              f64x2: 2                          \
+                              );                                \
       for (size_t i = 0; i < lanes; i++) {                      \
         if (!eq(a[i], b[i])) {                                  \
           err = true;                                           \

@@ -33,7 +33,7 @@ static __inline__ i8x16 __DEFAULT_FN_ATTRS wasm_v128_load(i8x16* mem) {
 }
 
 // wasm_v128_store(v128 *mem, v128 a)
-static __inline__ void __DEFAULT_FN_ATTRS wasm_v128_store(v128* mem, v128 a) {
+static __inline__ void __DEFAULT_FN_ATTRS wasm_v128_store(i8x16* mem, i8x16 a) {
   *(i8x16*)mem = a;
   return;
 }
@@ -72,7 +72,7 @@ static __inline__ f64x2 __DEFAULT_FN_ATTRS wasm_f64x2_splat(double a) {
 #define wasm_i8x16_extract_lane(a, b) \
   (__builtin_wasm_extract_lane_s_i8x16(a, b))
 
-// int8_t wasm_u8x16_extract_lane(u8x16 a, imm)
+// uint8_t wasm_u8x16_extract_lane(u8x16 a, imm)
 #define wasm_u8x16_extract_lane(a, b) \
   (__builtin_wasm_extract_lane_u_i8x16(a, b))
 
@@ -81,7 +81,7 @@ static __inline__ f64x2 __DEFAULT_FN_ATTRS wasm_f64x2_splat(double a) {
   (__builtin_wasm_extract_lane_s_i16x8(a, b))
 
 #ifdef __wasm_unimplemented_simd128__
-// int16_t wasm_u16x8_extract_lane(u16x8 a, imm)
+// uint16_t wasm_u16x8_extract_lane(u16x8 a, imm)
 #define wasm_u16x8_extract_lane(a, b) \
   (__builtin_wasm_extract_lane_u_i16x8(a, b))
 #endif
@@ -189,11 +189,6 @@ static __inline__ i16x8 __DEFAULT_FN_ATTRS wasm_i16x8_mul(i16x8 a, i16x8 b) {
 // i32x4 wasm_i32x4_mul(i32x4 a i32x4 b)
 static __inline__ i32x4 __DEFAULT_FN_ATTRS wasm_i32x4_mul(i32x4 a, i32x4 b) {
   return __extension__(i32x4){a * b};
-}
-
-// i64x2 wasm_i64x2_mul(i64x2 a i64x2 b)
-static __inline__ i64x2 __DEFAULT_FN_ATTRS wasm_i64x2_mul(i64x2 a, i64x2 b) {
-  return __extension__(i64x2){a * b};
 }
 
 // f32x4 wasm_f32x4_mul(f32x4 a f32x4 b)
@@ -369,8 +364,10 @@ static __inline__ i8x16 __DEFAULT_FN_ATTRS wasm_i8x16_not(i8x16 a) {
 // bool wasm_i32x4_all_true(i32x4 a)
 #define wasm_i32x4_all_true(a) (__builtin_wasm_all_true_i32x4(a))
 
+#ifdef __wasm_undefined_simd128__
 // bool wasm_i64x2_all_true(i64x2 a)
 #define wasm_i64x2_all_true(a) (__builtin_wasm_all_true_i64x2(a))
+#endif
 
 // i8x16 wasm_i8x16_eq(i8x16 a, i8x16 b)
 static __inline__ i8x16 __DEFAULT_FN_ATTRS wasm_i8x16_eq(i8x16 a, i8x16 b) {
@@ -387,19 +384,19 @@ static __inline__ i32x4 __DEFAULT_FN_ATTRS wasm_i32x4_eq(i32x4 a, i32x4 b) {
   return __extension__(i32x4){a == b};
 }
 
-#ifdef __wasm_undefined_simd128__
+// #ifdef __wasm_undefined_simd128__
 // i32x4 wasm_f32x4_eq(f32x4 a f32x4 b)
 static __inline__ i32x4 __DEFAULT_FN_ATTRS wasm_f32x4_eq(f32x4 a, f32x4 b) {
   return __extension__(f32x4){a == b};
 }
-#endif
+// #endif
 
-#ifdef __wasm_undefined_simd128__
+// #ifdef __wasm_undefined_simd128__
 // i64x2 wasm_f64x2_eq(f64x2 a, f64x2 b)
 static __inline__ i64x2 __DEFAULT_FN_ATTRS wasm_f64x2_eq(f64x2 a, f64x2 b) {
   return __extension__(f64x2){a == b};
 }
-#endif
+// #endif
 
 // i8x16 wasm_i8x16_ne(i8x16 a, i8x16 b)
 static __inline__ i8x16 __DEFAULT_FN_ATTRS wasm_i8x16_ne(i8x16 a, i8x16 b) {
@@ -452,7 +449,7 @@ static __inline__ i32x4 wasm_i32x4_lt(i32x4 a, i32x4 b) {
 }
 
 // i32x4 wasm_u32x4_lt(u32x4 a, u32x4 b)
-static __inline__ i32x4 wasm_i32x4_lt(u32x4 a, u32x4 b) {
+static __inline__ i32x4 wasm_u32x4_lt(u32x4 a, u32x4 b) {
   return __extension__(u32x4){a < b};
 }
 
@@ -471,7 +468,7 @@ static __inline__ i8x16 wasm_i8x16_le(i8x16 a, i8x16 b) {
   return __extension__(i8x16){a <= b};
 }
 
-// i8x16 wasm_i8x16_le(u8x16 a, u8x16 b)
+// i8x16 wasm_u8x16_le(u8x16 a, u8x16 b)
 static __inline__ i8x16 wasm_u8x16_le(u8x16 a, u8x16 b) {
   return __extension__(u8x16){a <= b};
 }
@@ -481,7 +478,7 @@ static __inline__ i16x8 wasm_i16x8_le(i16x8 a, i16x8 b) {
   return __extension__(i16x8){a <= b};
 }
 
-// i16x8 wasm_i16x8_le(u8x16 a, u8x16 b)
+// i16x8 wasm_u16x8_le(u8x16 a, u8x16 b)
 static __inline__ i8x16 wasm_u16x8_le(u8x16 a, u8x16 b) {
   return __extension__(u8x16){a <= b};
 }
@@ -492,7 +489,7 @@ static __inline__ i32x4 wasm_i32x4_le(i32x4 a, i32x4 b) {
 }
 
 // i32x4 wasm_u32x4_le(u32x4 a, u32x4 b)
-static __inline__ i32x4 wasm_i32x4_le(u32x4 a, u32x4 b) {
+static __inline__ i32x4 wasm_u32x4_le(u32x4 a, u32x4 b) {
   return __extension__(u32x4){a <= b};
 }
 
@@ -531,7 +528,7 @@ static __inline__ i32x4 wasm_i32x4_gt(i32x4 a, i32x4 b) {
   return __extension__(i32x4){a > b};
 }
 
-// i32x4 wasm_i32x4_gt(u32x4 a, u32x4 b)
+// i32x4 wasm_u32x4_gt(u32x4 a, u32x4 b)
 static __inline__ i32x4 wasm_u32x4_gt(u32x4 a, u32x4 b) {
   return __extension__(u32x4){a > b};
 }
@@ -561,7 +558,7 @@ static __inline__ i16x8 wasm_i16x8_ge(i16x8 a, i16x8 b) {
   return __extension__(i16x8){a >= b};
 }
 
-// i16x8 wasm_i16x8_ge(u16x8 a, u16x8 b)
+// i16x8 wasm_u16x8_ge(u16x8 a, u16x8 b)
 static __inline__ u16x8 wasm_u16x8_ge(u16x8 a, u16x8 b) {
   return __extension__(u8x16){a >= b};
 }
@@ -586,38 +583,11 @@ static __inline__ i64x2 wasm_f64x2_ge(f64x2 a, f64x2 b) {
   return __extension__(f32x4){a >= b};
 }
 
-// i8x16  wasm_i8x16_abs(i8x16 a)
-#define wasm_i8x16_abs(a) (__builtin_wasm_abs_i8x16(a))
-
-// i16x8  wasm_i16x8_abs(i16x8 a)
-#define wasm_i16x8_abs(a) (__builtin_wasm_abs_i16x8(a))
-
-// i32x4  wasm_i32x4_abs(i32x4 a)
-#define wasm_i32x4_abs(a) (__builtin_wasm_abs_i32x4(a))
-
-// i64x2  wasm_i64x2_abs(i64x2 a)
-#define wasm_i64x2_abs(a) (__builtin_wasm_abs_i64x2(a))
-
 // f32x4  wasm_f32x4_abs(f32x4 a)
 #define wasm_f32x4_abs(a) (__builtin_wasm_abs_f32x4(a))
 
 // f64x2  wasm_f64x2_abs(f64x2 a)
 #define wasm_f64x2_abs(a) (__builtin_wasm_abs_f64x2(a))
-
-// f32x4 wasm_convert_f32x4_i32x4(i32x4 a)
-#define wasm_convert_f32x4_i32x4(v) (__builtin_convertvector(v, f32x4))
-
-// f32x4 wasm_convert_f32x4_u32x4(u32x4 a)
-#define wasm_convert_f32x4_u32x4(v) (__builtin_convertvector(v, f32x4))
-
-// f64x2 wasm_convert_f64x2_i64x2(i64x2 a)
-#define wasm_convert_f64x2_i64x2(v) (__builtin_convertvector(v, f64x2))
-
-// f64x2 wasm_convert_f64x2_u64x2(u64x2 a)
-#define wasm_convert_f64x2_u64x2(v) (__builtin_convertvector(v, f64x2))
-
-#ifdef __wasm_unimplemented_simd128__
-#endif
 
 // f32x4 wasm_f32x4_min(f32x4 a, f32x4 b)
 #define wasm_f32x4_min(a, b)  (__builtin_wasm_min_f32x4(a, b))
@@ -644,3 +614,60 @@ static __inline__ i64x2 wasm_f64x2_ge(f64x2 a, f64x2 b) {
 // not sure how this should work with variable input
 // #define wasm_i8x16_shuffle(a, b) \
 //  (__builtin_shufflevector(a, b, 0, 1, 2, 3, 4, 5, 6, 7))
+
+// f32x4 wasm_f32x4_div(f32x4 a f32x4 b)
+static __inline__ f32x4 __DEFAULT_FN_ATTRS wasm_f32x4_div(f32x4 a, f32x4 b) {
+  return __extension__(f32x4){a / b};
+}
+
+// f64x2 wasm_f64x2_add(f64x2 a f64x2 b)
+static __inline__ f64x2 __DEFAULT_FN_ATTRS wasm_f64x2_add(f64x2 a, f64x2 b) {
+  return __extension__(f64x2){a + b};
+}
+
+// f64x2 wasm_f64x2_sub(f64x2 a f64x2 b)
+static __inline__ f64x2 __DEFAULT_FN_ATTRS wasm_f64x2_sub(f64x2 a, f64x2 b) {
+  return __extension__(f64x2){a - b};
+}
+
+// f64x2 wasm_f64x2_mul(f64x2 a f64x2 b)
+static __inline__ f64x2 __DEFAULT_FN_ATTRS wasm_f64x2_mul(f64x2 a, f64x2 b) {
+  return __extension__(f64x2){a * b};
+}
+
+// f64x2 wasm_f64x2_div(f64x2 a f64x2 b)
+static __inline__ f64x2 __DEFAULT_FN_ATTRS wasm_f64x2_div(f64x2 a, f64x2 b) {
+  return __extension__(f64x2){a / b};
+}
+
+#define wasm_i32x4_trunc_s_f32x4_sat(v) \
+  (__builtin_wasm_trunc_saturate_s_i32x4_f32x4(v))
+
+#define wasm_i32x4_trunc_u_f32x4_sat(v) \
+  (__builtin_wasm_trunc_saturate_u_i32x4_f32x4(v))
+
+#ifdef __wasm_unimplemented_simd128__
+#define wasm_i64x2_trunc_s_f64x2_sat(v) \
+  (__builtin_wasm_trunc_saturate_s_i64x2_f64x2(v))
+
+#define wasm_i64x2_trunc_u_f64x2_sat(v) \
+  (__builtin_wasm_trunc_saturate_u_i64x2_f64x2(v))
+#endif // __wasm_unimplemented_simd128__
+
+#define wasm_f32x4_convert_s_i32x4(v) \
+  (__builtin_convertvector(v, f32x4))
+
+#define wasm_f32x4_convert_u_i32x4(v) \
+  (__builtin_convertvector((u32x4)v, f32x4))
+
+#define wasm_f64x2_convert_s_i64x2(v) \
+  (__builtin_convertvector(v, f64x2))
+
+#define wasm_f64x2_convert_u_i64x2(v) \
+  (__builtin_convertvector((u64x2)v, f64x2))
+
+#define wasm_i8x16_shuffle_interleave_bytes(x, y) \
+  (__builtin_shufflevector(x, y, 0, 17, 2, 19, 4, 21, 6, 23, 8, 25, 10, 27, 12, 29, 14, 31))
+
+#define wasm_i32x4_shuffle_reverse(v) \
+  (__builtin_shufflevector(v, v, 3, 2, 1, 0))
